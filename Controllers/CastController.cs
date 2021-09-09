@@ -1,5 +1,6 @@
 using System.Linq;
 using api.Models;
+using api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -10,9 +11,12 @@ namespace api.Controllers
     public class CastController : ControllerBase
     {
         private ILogger<CastController> _logger;
-        public CastController(ILogger<CastController> logger)
+        private LocalMailService _mailService;
+        public CastController(ILogger<CastController> logger, LocalMailService mailService)
         {
+
             _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
+            _mailService = mailService ?? throw new System.ArgumentNullException(nameof(mailService));
         }
         [HttpGet]
         public IActionResult GetMovies(int movieId)
@@ -130,6 +134,8 @@ namespace api.Controllers
 
             if (castFromStore == null)
                 return NotFound();
+
+            _mailService.Send("Deleted resource", $"resource from {id} is deleted");
 
             movie.Casts.Remove(castFromStore);
 
