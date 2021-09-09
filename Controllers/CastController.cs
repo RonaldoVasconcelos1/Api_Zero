@@ -35,5 +35,35 @@ namespace api.Controllers
 
             return Ok(casts);
         }
+
+
+        [HttpPost]
+        public IActionResult CreateCast(int movieId, [FromBody] CastForCreateDto cast)
+        {
+            var movie = MoviesDataStore.Current.Movies
+                .FirstOrDefault(m => m.Id == movieId);
+
+            if (movie == null)
+                return NotFound();
+
+            var maxCastId = MoviesDataStore.Current.Movies
+                .SelectMany(x => x.Casts)
+                .Max(p => p.Id);
+
+            var newCast = new CastDto
+            {
+                Id = ++maxCastId,
+                Name = cast.Name,
+                Character = cast.Character,
+            };
+
+            movie.Casts.Add(newCast);
+
+            return CreatedAtRoute(
+                nameof(GetCasts),
+                new { movieId = movieId, id = newCast.Id },
+                cast
+            );
+        }
     }
 }
