@@ -1,6 +1,7 @@
 using System.Linq;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace api.Controllers
 {
@@ -8,33 +9,60 @@ namespace api.Controllers
     [Route("api/movies/{movieId}/casts")]
     public class CastController : ControllerBase
     {
+        private ILogger<CastController> _logger;
+        public CastController(ILogger<CastController> logger)
+        {
+            _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
+        }
         [HttpGet]
         public IActionResult GetMovies(int movieId)
         {
-            var movie = MoviesDataStore.Current
-                .Movies.FirstOrDefault(m => m.Id == movieId);
+            try
+            {
+                var movie = MoviesDataStore.Current
+               .Movies.FirstOrDefault(m => m.Id == movieId);
 
-            if (movie == null)
-                return NotFound();
+                if (movie == null)
+                    return NotFound();
 
-            return Ok(movie.Casts);
+                return Ok(movie.Casts);
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogCritical($"Id notfound {movieId}, : {ex}");
+
+                throw;
+            }
+
         }
 
         [HttpGet("{id}", Name = "GetCasts")]
         public IActionResult GetCasts(int movieId, int id)
         {
-            var movie = MoviesDataStore.Current
-                .Movies.FirstOrDefault(m => m.Id == movieId);
+            try
+            {
+                var movie = MoviesDataStore.Current
+              .Movies.FirstOrDefault(m => m.Id == movieId);
 
-            if (movie == null)
-                return NotFound();
+                if (movie == null)
+                    return NotFound();
 
-            var casts = movie.Casts.FirstOrDefault(c => c.Id == id);
+                var casts = movie.Casts.FirstOrDefault(c => c.Id == id);
 
-            if (casts == null)
-                return NotFound();
+                if (casts == null)
+                {
+                    _logger.LogInformation($"Id notfound {id}");
+                    return NotFound();
+                }
 
-            return Ok(casts);
+                return Ok(casts);
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogCritical($"Id notfound {id}, : {ex}");
+
+                return StatusCode(500, "Server internal error");
+            }
         }
 
 
