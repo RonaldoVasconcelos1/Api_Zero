@@ -1,4 +1,5 @@
 using System.Linq;
+using api.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -19,7 +20,7 @@ namespace api.Controllers
             return Ok(movie.Casts);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetCasts")]
         public IActionResult GetCasts(int movieId, int id)
         {
             var movie = MoviesDataStore.Current
