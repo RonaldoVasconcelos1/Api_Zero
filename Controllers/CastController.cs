@@ -89,7 +89,24 @@ namespace api.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCast(int movieId, int id)
+        {
+            var movie = MoviesDataStore.Current.Movies
+             .FirstOrDefault(c => c.Id == movieId);
 
+            if (movie == null)
+                return NotFound();
+
+            var castFromStore = movie.Casts.FirstOrDefault(c => c.Id == id);
+
+            if (castFromStore == null)
+                return NotFound();
+
+            movie.Casts.Remove(castFromStore);
+
+            return NoContent();
+        }
 
     }
 
