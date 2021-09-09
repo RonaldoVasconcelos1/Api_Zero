@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace api.Models
 {
-    public class CastForCreateDto
+    public class CastForUpdateDto
     {
         public int Id { get; set; }
 
