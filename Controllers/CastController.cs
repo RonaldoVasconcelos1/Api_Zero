@@ -39,6 +39,7 @@ namespace api.Controllers
 
 
         [HttpPost]
+
         public IActionResult CreateCast(int movieId, [FromBody] CastForCreateDto cast)
         {
             var movie = MoviesDataStore.Current.Movies
@@ -66,5 +67,30 @@ namespace api.Controllers
                 cast
             );
         }
+
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateCast(int movieId, int id, [FromBody] CastForUpdateDto cast)
+        {
+
+            var movie = MoviesDataStore.Current.Movies
+                .FirstOrDefault(c => c.Id == movieId);
+
+            if (movie == null)
+                return NotFound();
+
+            var castFromStore = movie.Casts.FirstOrDefault(c => c.Id == id);
+
+            if (castFromStore == null)
+                return NotFound();
+
+            castFromStore.Name = cast.Name;
+            castFromStore.Character = cast.Character;
+            return NoContent();
+        }
+
+
+
     }
+
 }
