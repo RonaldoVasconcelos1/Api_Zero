@@ -11,8 +11,8 @@ namespace api.Controllers
     public class CastController : ControllerBase
     {
         private ILogger<CastController> _logger;
-        private LocalMailService _mailService;
-        public CastController(ILogger<CastController> logger, LocalMailService mailService)
+        private IMailService _mailService;
+        public CastController(ILogger<CastController> logger, IMailService mailService)
         {
 
             _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
