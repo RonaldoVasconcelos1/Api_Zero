@@ -9,5 +9,6 @@ namespace api.Context
         {
         }
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<Cast> Casts { get; set; }
     }
 }
