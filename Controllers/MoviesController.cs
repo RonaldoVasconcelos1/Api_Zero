@@ -1,4 +1,8 @@
+using System.Collections.Generic;
 using System.Linq;
+using api.Models;
+using api.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -8,22 +12,30 @@ namespace api.Controllers
 
     public class MoviesController : ControllerBase
     {
+        private IMovieInfoRepository _repository;
+        private IMapper _mapper;
+        public MoviesController(IMovieInfoRepository repository, IMapper mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
 
         [HttpGet]
         public IActionResult GetMovies()
         {
-            return Ok(MoviesDataStore.Current.Movies);
+            var movies = _repository.GetMovies();
+            return Ok(_mapper.Map<IEnumerable<MovieDto>>(movies));
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetMovies(int id)
+        public IActionResult GetMovies(int id, bool inclueCast)
         {
-            var movies = MoviesDataStore.Current.Movies.FirstOrDefault(m => m.Id == id);
+            var movie = _repository.GetMovie(id, inclueCast);
 
-            if (movies == null)
+            if (movie == null)
                 return NotFound();
 
-            return Ok(movies);
+            return Ok(_mapper.Map<MovieDto>(movie));
         }
 
     }

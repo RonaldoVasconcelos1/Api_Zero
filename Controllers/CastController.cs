@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using api.Models;
 using api.Services;
@@ -12,24 +13,27 @@ namespace api.Controllers
     {
         private ILogger<CastController> _logger;
         private IMailService _mailService;
-        public CastController(ILogger<CastController> logger, IMailService mailService)
+        private IMovieInfoRepository _repository;
+        public CastController(ILogger<CastController> logger, IMailService mailService, IMovieInfoRepository repository)
         {
 
             _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
             _mailService = mailService ?? throw new System.ArgumentNullException(nameof(mailService));
+            _repository = repository;
         }
         [HttpGet]
-        public IActionResult GetMovies(int movieId)
+        public IActionResult GetCasts(int movieId)
         {
             try
             {
-                var movie = MoviesDataStore.Current
-               .Movies.FirstOrDefault(m => m.Id == movieId);
-
-                if (movie == null)
+                if (!_repository.MovieExists(movieId))
                     return NotFound();
 
-                return Ok(movie.Casts);
+                var cast = _repository.GetCasts(movieId);
+
+
+
+                return Ok(cast);
             }
             catch (System.Exception ex)
             {
