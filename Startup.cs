@@ -39,6 +39,7 @@ namespace api
             {
                 opt.UseSqlite(_configuration.GetConnectionString("movieDb"));
             });
+            services.AddScoped<IMovieInfoRepository, MovieInfoRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
