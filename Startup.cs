@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Context;
 using api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -26,6 +28,12 @@ namespace api
 
             services.AddTransient<IMailService, LocalMailService>();
             services.AddTransient<IMailService, CloudLocalService>();
+
+            var connectionString = "Data source=movie.db";
+            services.AddDbContext<MovieDbContext>(opt =>
+            {
+                opt.UseSqlite(connectionString);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
