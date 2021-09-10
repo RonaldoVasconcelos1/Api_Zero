@@ -7,7 +7,7 @@ namespace api.Context
     {
         public MovieDbContext(DbContextOptions<MovieDbContext> options) : base(options)
         {
-            Database.EnsureCreated();
+
         }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Cast> Casts { get; set; }
